@@ -5,7 +5,9 @@ import { filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
 import * as fromStore from '../../@store';
+import * as fromCore from '../../../../core/@store';
 import { WishList } from '../../models/wishlist';
+import { User } from '../../../../shared/models/user';
 
 @Component({
   selector: 'app-wishlist-list',
@@ -16,10 +18,12 @@ export class WishlistListComponent implements OnInit {
 
   wishlist$: Observable<WishList>;
   wishlistLoaded$: Observable<boolean>;
+  user: User;
 
   constructor(private store: Store<fromStore.WhishListFeatureState>) {}
 
   ngOnInit(): void {
+      this.store.pipe(select(fromCore.selectUser)).subscribe((user: User) => this.user = user);
       this.wishlist$ = this.store.pipe(select(fromStore.getWishlist));
       this.wishlistLoaded$ = this.store.pipe(select(fromStore.getWishlistLoaded));
       this.wishlistLoaded$.pipe(
@@ -29,7 +33,7 @@ export class WishlistListComponent implements OnInit {
           }
         })
       ).subscribe((loaded: boolean) => {
-        this.store.dispatch(new fromStore.LoadWishlist());
+        this.store.dispatch(new fromStore.LoadWishlist(this.user.id));
       });
   }
 }

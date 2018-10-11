@@ -17,10 +17,12 @@ export class WishlistEffects {
   ) {}
 
   @Effect()
-  loadWishlist$: Observable<any> = this.actions$.pipe(ofType(wishlistActions.LOAD_WISHLIST),
-    switchMap(() => {
+  loadWishlist$: Observable<any> = this.actions$.pipe(
+    ofType(wishlistActions.LOAD_WISHLIST),
+    map((action: wishlistActions.WishlistAction) => action.payload),
+    switchMap((payload: string) => {
       return this.wishlistService
-        .getWishList()
+        .getWishList(payload)
         .pipe(
           map((response: {success: boolean; wishlist: WishList}) => {
             return new wishlistActions.LoadPWishlistSuccess(response.wishlist);

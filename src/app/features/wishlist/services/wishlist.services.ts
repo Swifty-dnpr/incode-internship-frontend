@@ -11,8 +11,7 @@ import { WishList } from '../models/wishlist';
 export class WishlistService {
   constructor(private http: HttpClient) {}
 
-  getWishList(): Observable<{success: boolean; wishlist: WishList}> {
-    const id: string = '5bb72709cf340815b5bcbc36';
+  getWishList(id: string): Observable<{success: boolean; wishlist: WishList}> {
 
     return this.http.get<{success: boolean; wishlist: WishList}>
     (`${environment.baseUrl}/wishlists/${id}`);

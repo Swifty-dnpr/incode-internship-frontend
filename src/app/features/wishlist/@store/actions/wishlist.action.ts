@@ -8,6 +8,7 @@ export const LOAD_WISHLIST_SUCCESS: string = '[Whislist] Load Wishlist Success';
 
 export class LoadWishlist implements Action {
   readonly type: string = LOAD_WISHLIST;
+  constructor(public payload: string) {}
 }
 
 export class LoadWishlistFail implements Action {

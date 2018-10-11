@@ -11,6 +11,7 @@ import { Filter } from './models/filter';
 import { User } from '../../shared/models/user';
 import { WishList } from '../wishlist/models/wishlist';
 import { selectUser } from '../../core/@store';
+import * as fromWishlist from '../wishlist/@store';
 
 @Component({
   selector: 'app-shop',
@@ -58,13 +59,14 @@ export class ShopComponent implements OnInit {
       })
     ).subscribe((loaded: boolean) => {
       this.store.dispatch(new fromStore.LoadCategories());
-    });
-
+    })
     // loading view mode
     this.viewMode$ = this.store.pipe(select(fromStore.getViewMode));
     // loading user
     this.store.pipe(select(selectUser)).subscribe((user: any) => this.user = user);
     this.store.pipe(select(fromStore.selectWishlistProducts)).subscribe((wishlist: WishList) => this.wishlist = wishlist);
+    // loading wishlist
+    this.store.dispatch(new fromWishlist.LoadWishlist(this.user.id));
   }
 
   onFiltersChanged(filters: Filter): void {
@@ -80,6 +82,7 @@ export class ShopComponent implements OnInit {
   }
 
   onAddToWishlist(product: Product): void {
+    this.store.pipe(select(fromWishlist.getWishlist)).subscribe((wishlist: WishList) => this.wishlist = wishlist);
     if (this.wishlist === null) {
       const wishlistToCreate: WishList = {client: this.user, items: [product]};
       this.store.dispatch(new fromStore.CreateNewWishlist(wishlistToCreate));
