@@ -57,3 +57,7 @@
 .grid-product-price {
   text-align: center;
 }
+
+.in-wishlist {
+  color: red;
+}

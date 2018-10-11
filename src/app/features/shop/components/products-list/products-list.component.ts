@@ -13,6 +13,8 @@ export class ProductsListComponent {
   @Input() viewMode$: Observable<string>;
   @Output() addToCart: EventEmitter<Product> = new EventEmitter<Product>();
   @Output() changeView: EventEmitter<string> = new EventEmitter<string>();
+  @Output() addToWishlist: EventEmitter<Product> = new EventEmitter<Product>();
+  @Output() removeFromWishlist: EventEmitter<Product> = new EventEmitter<Product>();
 
   onAddToCart(product: Product): void {
     this.addToCart.emit(product);
@@ -20,5 +22,12 @@ export class ProductsListComponent {
 
   onChangeView(view: string): void {
     this.changeView.emit(view);
+  }
+
+  onAddToWishlist(product: Product): void {
+    this.addToWishlist.emit(product);
+  }
+  onRemoveFromWishlist(product: Product): void {
+    this.removeFromWishlist.emit(product);
   }
 }

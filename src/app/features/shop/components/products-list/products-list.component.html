@@ -19,5 +19,7 @@
   *ngFor="let product of (products$ | async)"
   [product]="product"
   [viewMode$]="viewMode$"
-  (addToCart)="onAddToCart($event)">
+  (addToCart)="onAddToCart($event)"
+  (addToWishlist)="onAddToWishlist($event)"
+  (removeFromWishlist)="onRemoveFromWishlist($event)">
 </app-products-item>

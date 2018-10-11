@@ -4,5 +4,4 @@ export class UserResponseModel {
   password: string;
   iat: number;
   exp: number;
-  token: string;
 }

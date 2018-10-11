@@ -8,6 +8,9 @@ import * as fromStore from './@store';
 import { Category } from '../../shared/models/category';
 import { Product } from '../../shared/models/product';
 import { Filter } from './models/filter';
+import { User } from '../../shared/models/user';
+import { WishList } from '../wishlist/models/wishlist';
+import { selectUser } from '../../core/@store';
 
 @Component({
   selector: 'app-shop',
@@ -22,6 +25,9 @@ export class ShopComponent implements OnInit {
 
   categories$: Observable<Category[]>;
   categoriesLoaded$: Observable<{}>;
+
+  wishlist: WishList;
+  user: User;
 
   constructor(private store: Store<fromStore.ShopState>) {
   }
@@ -56,7 +62,9 @@ export class ShopComponent implements OnInit {
 
     // loading view mode
     this.viewMode$ = this.store.pipe(select(fromStore.getViewMode));
-
+    // loading user
+    this.store.pipe(select(selectUser)).subscribe((user: any) => this.user = user);
+    this.store.pipe(select(fromStore.selectWishlistProducts)).subscribe((wishlist: WishList) => this.wishlist = wishlist);
   }
 
   onFiltersChanged(filters: Filter): void {
@@ -69,5 +77,21 @@ export class ShopComponent implements OnInit {
 
   onViewChanged(view: string): void {
     this.store.dispatch(new fromStore.ChangeViewMode(view));
+  }
+
+  onAddToWishlist(product: Product): void {
+    if (this.wishlist === null) {
+      const wishlistToCreate: WishList = {client: this.user, items: [product]};
+      this.store.dispatch(new fromStore.CreateNewWishlist(wishlistToCreate));
+    } else {
+      const newItems: Product[] = [...this.wishlist.items, product];
+      const newWishlist: WishList = {client: this.user, items: newItems};
+      this.store.dispatch(new fromStore.AddProductToWishlist(newWishlist));
+    }
+  }
+  onRemoveFromWishlist(product: Product): void {
+    const newItems: Product[] = this.wishlist.items.filter((item: Product) => item !== product);
+    const newWishlist: WishList = {client: this.user, items: newItems};
+    this.store.dispatch(new fromStore.RemoveProductFromWishlist(newWishlist));
   }
 }
